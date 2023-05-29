@@ -13,6 +13,12 @@ map('n', ',e', ':NvimTreeToggle<CR>', { noremap = true, silent = true })
 
 
 require('nvim-tree').setup({
+  sort_by = "case_sensitive",
+  actions = {
+    open_file = {
+      quit_on_open = true
+    }
+  },
   update_focused_file = {
     enable = true,
     update_cwd = true
@@ -21,6 +27,18 @@ require('nvim-tree').setup({
     custom = {
       '^.git$',
       '^node_modules$',
+    }
+  },
+  view = {
+    width = 30,
+  },
+  git = {
+    enable = fasle
+  },
+  log = {
+    enable = true,
+    types = {
+      diagnostics = true
     }
   },
   diagnostics = {

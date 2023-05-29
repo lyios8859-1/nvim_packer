@@ -101,6 +101,28 @@ return require('packer').startup(function(use)
     'kevinhwang91/promise-async'
   }
   -- git 修改的显示标识
-  use 'lewis6991/gitsigns.nvim'
   -- 查看 git 提交记录
+  use 'lewis6991/gitsigns.nvim'
+
+  -- rust 的插件
+  use{
+    "simrat39/rust-tools.nvim",  --  rust 开发环境工具
+     requires = {
+       "nvim-lua/plenary.nvim",
+       -- debugger, 在末行模式运行 RustDebuggables
+       -- 系统再安装 lldb
+       "mfussenegger/nvim-dap",  -- For debuging
+     }
+  }
+  use {
+    "rust-lang/rust.vim",
+    requires = {
+      "mattn/webapi-vim"
+    },
+  }
+  use {
+    "saecki/crates.nvim",
+    tag = 'v0.3.0',
+    requires = { 'nvim-lua/plenary.nvim' },
+  }
 end)
