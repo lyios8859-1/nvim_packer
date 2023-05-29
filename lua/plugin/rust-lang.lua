@@ -96,3 +96,62 @@ require('crates').setup({
     name = "crates.nvim",
   }
 })
+
+
+-- =============debugger start========================
+local dap = require('dap')
+
+dap.adapters.lldbrust = {
+  type = "executable",
+  attach = { pidProperty = "pid", pidSelect = "ask" },
+  -- 这里指向lldb-vscode的实际路径
+  -- https://github.com/mfussenegger/nvim-dap/wiki/Debug-Adapter-installation
+  -- 参考 https://zhuanlan.zhihu.com/p/590908735
+  -- lldb-vscode lldb-server 提前编译好的路径
+  command = "/usr/bin/lldb-vscode",
+  env = { LLDB_LAUNCH_FLAG_LAUNCH_IN_TTY = "YES" },
+}
+dap.adapters.rust = dap.adapters.lldbrust
+
+dap.configurations.rust = {
+  {
+    type = "rust",
+    request = "launch",
+    name = "lldbrust",
+    program = function()
+      local metadata_json = vim.fn.system "cargo metadata --format-version 1 --no-deps"
+      local metadata = vim.fn.json_decode(metadata_json)
+      local target_name = metadata.packages[1].targets[1].name
+      local target_dir = metadata.target_directory
+      return target_dir .. "/debug/" .. target_name
+    end,
+    args = function()
+-- 同样的进行命令行参数指定
+      local inputstr = vim.fn.input("CommandLine Args:", "")
+      local params = {}
+      for param in string.gmatch(inputstr, "[^%s]+") do
+        table.insert(params, param)
+      end
+      return params
+    end,
+  },
+}
+
+-- 断点快捷键设置
+-- https://github.com/mfussenegger/nvim-dap/tree/56118cee6af15cb9ddba9d080880949d8eeb0c9f
+-- 设置断点
+vim.keymap.set('n', '<leader>db', ':lua require("dap").toggle_breakpoint()<CR>')
+
+vim.keymap.set('n', '<leader>du', ':lua require("dap").continue()<CR>')
+
+-- 单步
+vim.keymap.set('n', '<leader>do', ':lua require("dap").step_over()<CR>')
+-- 进入
+vim.keymap.set('n', '<leader>dr', ':lua require("dap").step_into()<CR>')
+
+-- https://github.com/rcarriga/nvim-dap-ui
+-- 显示断点变量作用域栈信息
+vim.keymap.set('n', '<leader>da', ':lua require("dapui").toggle()<CR>')
+
+require('dapui').setup()
+-- =============debugger end========================

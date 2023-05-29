@@ -109,9 +109,6 @@ return require('packer').startup(function(use)
     "simrat39/rust-tools.nvim",  --  rust 开发环境工具
      requires = {
        "nvim-lua/plenary.nvim",
-       -- debugger, 在末行模式运行 RustDebuggables
-       -- 系统再安装 lldb
-       "mfussenegger/nvim-dap",  -- For debuging
      }
   }
   use {
@@ -124,5 +121,20 @@ return require('packer').startup(function(use)
     "saecki/crates.nvim",
     tag = 'v0.3.0',
     requires = { 'nvim-lua/plenary.nvim' },
+  }
+  use {
+    'rcarriga/nvim-dap-ui',
+    -- 系统安装 lldb 工具
+    --
+    -- debugger
+    --
+    -- 末行模式运行 RustDebuggables
+    -- 打断点  DapToggleBreakpoint
+    -- 一行一行执行 DapStepOver
+    --
+    requires = {
+      'mfussenegger/nvim-dap',
+      'nvim-lua/plenary.nvim'
+    },
   }
 end)
